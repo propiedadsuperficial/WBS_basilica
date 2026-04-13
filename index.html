@@ -475,6 +475,16 @@ function selectDoc(idx,el) {
   el.classList.add('selected'); selEl=el; showDetail(idx);
 }
 
+const GITHUB_BASE = "https://github.com/propiedadsuperficial/WBS_basilica/blob/main/WBS/PS";
+function rutaGitHub(rutaLocal) {
+  if (!rutaLocal) return null;
+  // Extrae la parte después de "WBS\PS\" y convierte \ en /
+  const match = rutaLocal.match(/WBS\\PS\\(.+)$/i);
+  if (!match) return null;
+  const segs = match[1].split('\\');
+  return GITHUB_BASE + '/' + segs.map(s => encodeURIComponent(s)).join('/');
+}
+ 
 function fv(val) {
   if(!val||val==='\u2014'||val==='Pendiente') return `<span class="field-value empty">${val||'\u2014'}</span>`;
   return `<span class="field-value">${val}</span>`;
@@ -515,7 +525,9 @@ function showDetail(idx) {
         <div class="field-row"><span class="field-label">Confidencialidad</span>${fv(doc['Confidencialidad'])}</div>
         <div class="field-row"><span class="field-label">Tipo de Archivo</span><span class="field-value">PDF</span></div>
         <div class="field-row full"><span class="field-label">Palabras Clave</span>${fv(doc['Palabras clave'])}</div>
-        <div class="field-row full"><span class="field-label">Ruta</span>${fv(doc['Ruta Local'])}</div>
+
+        <div class="field-row full"><span class="field-label">Ruta GitHub</span>${(()=>{const url=rutaGitHub(doc['Ruta Local']);return url?`<span class="field-value"><a href="${url}" target="_blank" rel="noopener" style="color:#1a5c8a;word-break:break-all;font-size:11px;">${url}</a></span>`:`<span class="field-value empty">—</span>`;})()}</div>
+
         <div class="field-row full"><span class="field-label">Observaciones</span>${fv(doc['Observaciones'])}</div>
       </div>
     </div>`;
